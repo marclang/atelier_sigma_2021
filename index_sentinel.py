@@ -105,7 +105,7 @@ def calcul_index (mask, in_Folder=None, nb_ligne=None, nb_col=None,
             # Calcul NDVI (ACORVI (0.05))
             ndvi = ((ir - (red + 0.05)) / (ir + (red + 0.05))) * 1000
             ndvi = ndvi.astype('int16')
-            ndvi_mask = pc.mask_rpg(ndvi, mask, no_data = -32000).astype('int16')
+            ndvi_mask = pc.mask(ndvi, mask, no_data = -32000, value = 0).astype('int16')
             
             # Si on veut une seule image multibandes en sortie
             if nb_Out_Img == 1:
@@ -143,7 +143,7 @@ def calcul_index (mask, in_Folder=None, nb_ligne=None, nb_col=None,
             ndwi20 = ((nir - swir) / (nir + swir)) * 1000
             ndwi20 = ndwi20.astype('int16')         
             ndwi = pc.resample_sentinel(ndwi20, nb_col, nb_ligne).astype('int16')
-            ndwi_mask = pc.mask_rpg(ndwi, mask, no_data = -32000).astype('int16')
+            ndwi_mask = pc.mask(ndwi, mask, no_data = -32000, value = 0).astype('int16')
             # Si on veut une seule image multibandes en sortie
             if nb_Out_Img == 1:
                 
