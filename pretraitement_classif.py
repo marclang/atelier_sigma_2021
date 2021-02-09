@@ -58,7 +58,7 @@ def resample_sentinel(array, nb_col, nb_ligne):
         
     return array_Rech
 
-def mask_rpg (array, mask, no_data):
+def mask (array, mask, no_data, value, group=True):
     """
     Permets de retirer les élèments superflus des couches nécessaires à la classification.
     
@@ -68,17 +68,74 @@ def mask_rpg (array, mask, no_data):
         Image à classifier
     mask : numpy array
         couche de masque
-    noData : valeur de noData
+    noData : int
+        valeur de noData
+    value : int
+        valeur à masquer
+    group : bool
+        True (défaut) : Toutes les valeurs strictement supérieur à la valeur indiquée sont masquées
+        False : Seul la valeur à masquer est masquée
         
     Returns
     -------
-    outArray : numpy array
+    array : numpy array
         Array numpy sans les valeurs du mask.
     """
-    mask_bool = mask > 0
-    array[mask_bool] = no_data
-    
+
+    if group == True:
+        
+        mask_bool = mask > value
+        array[mask_bool] = no_data
+        
+    else:
+        
+        mask_bool = mask == value
+        array[mask_bool] = no_data
+        
     return array
+
+def prepare_for_lvl2 (array, array_classif1, no_data, other_value = 0):
+    """
+    Permets d'isoler les pixels ou de la végétation a été prédite lors de la première classification
+
+    Parameters
+    ----------
+    array : numpy array
+        Image à classifier
+    array_classif1 : numpy array
+        Array issue de la classification niveau 1
+    noData : int
+        valeur de noData
+    other_value : int
+        valeur de la classe à masquer (autres) dans array_classif1 (défaut 0)
+    Returns
+    -------
+    array : numpy array
+        Array de la zone d'étude sans la classe à retirer (defaut : "autres")
+    """
+    # Récupération des dimensions de de l'image à masquer
+    
+    nb_band = array.shape[2]
+    nb_col = array.shape[1]
+    nb_ligne = array.shape[0]
+    
+    # Création de l'array d'accueil
+    
+    array_lvl2 = np.zeros((nb_ligne, nb_col, nb_band)).astype('int16')
+        
+    # Création du masque pour la classe "autres" du premier niveau de la classification
+    
+    
+    # Masquage "autres" sur toutes les bandes
+    for i in range(0,nb_band):
+        
+        array_temp = np.zeros((nb_ligne, nb_col, 1)).astype('int16')
+        array_temp[:,:,0] = array[:,:,i]
+        array_temp_masked = mask(array = array_temp, mask = array_classif1, \
+                                 no_data = no_data, value = other_value, group = False)
+        array_lvl2[:,:,i] = array_temp_masked[:,:,0] 
+        
+    return array_lvl2
 
 def polygon_to_point (vector_filename, out_filename):
     """
