@@ -68,7 +68,7 @@ def mask (array, mask, no_data, value, group=True):
         Image à classifier
     mask : numpy array
         couche de masque
-    noData : int
+    no_data : int
         valeur de noData
     value : int
         valeur à masquer
@@ -104,7 +104,7 @@ def prepare_for_lvl2 (array, array_classif1, no_data, other_value = 0):
         Image à classifier
     array_classif1 : numpy array
         Array issue de la classification niveau 1
-    noData : int
+    no_data : int
         valeur de noData
     other_value : int
         valeur de la classe à masquer (autres) dans array_classif1 (défaut 0)
