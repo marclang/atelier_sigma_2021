@@ -138,7 +138,8 @@ rw.write_image(outClassif1, imgClassifie1, dataSet, gdal_dtype=None,
 
 # Masque des zones autres et rpg
 
-array_lvl2 = pc.prepare_for_lvl2(arrayZe, imgClassifie1, -32000)
+array_lvl2 = pc.prepare_for_lvl2(array = arrayZe, array_classif1 = imgClassifie1, \
+                                 no_data = -32000)
 
 # Ecriture de l'image
 
